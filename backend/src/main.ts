@@ -7,7 +7,8 @@ async function bootstrap() {
   app.setGlobalPrefix("api/afisha");
   app.enableCors({
     origin: 'http://localhost:5173',
-    credentials: true, 
+    credentials: true,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE', 
   });
   // await app.listen(3000);
   try {
