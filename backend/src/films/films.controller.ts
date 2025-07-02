@@ -2,7 +2,6 @@ import { BadRequestException, Body, Controller, Get, Param, Post } from '@nestjs
 import { FilmsService } from './films.service';
 import { FilmResponseDto } from './dto/film.dto';
 import { ScheduleResponseDto } from './dto/schedule.dto';
-// import { CreateFilmDto } from './dto/films.dto';
 
 @Controller('films')
 export class FilmsController {
