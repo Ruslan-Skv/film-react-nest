@@ -4,7 +4,7 @@ import { FilmResponseDto } from './dto/film.dto';
 import { ScheduleResponseDto } from './dto/schedule.dto';
 // import { CreateFilmDto } from './dto/films.dto';
 
-@Controller('afisha/films')
+@Controller('films')
 export class FilmsController {
     constructor(private readonly filmsService: FilmsService) {};
     

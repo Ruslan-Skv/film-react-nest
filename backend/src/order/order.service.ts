@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable } from '@nestjs/common';
 import { CreateOrderDto } from './dto/order.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Film } from 'src/films/schemas/film.schema';
@@ -14,7 +14,7 @@ export class OrderService {
         const session = film.schedule.find(s => s.id === order.session);
 
         if (!session) {
-            throw new Error('Session not found');
+            throw new ConflictException('Session not found');
         }
 
         const seatKey = `${order.row}:${order.seat}`;

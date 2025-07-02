@@ -7,55 +7,55 @@ class Session {
   id: string;
 
   @Prop({ required: true })
-  daytime: string;
+  daytime: string;  // Время сеанса (например, "14:00")
 
   @Prop({ required: true })
-  hall: number;
+  hall: number;  // Номер зала
 
   @Prop({ required: true })
-  rows: number;
+  rows: number;  // Количество рядов в зале
 
   @Prop({ required: true })
-  seats: number;
+  seats: number;  // Количество мест в ряду
 
   @Prop({ required: true })
-  price: number;
+  price: number;  // Цена билета
 
   @Prop({ type: [String], default: [] })
-  taken: string[];
+  taken: string[];  // Массив занятых мест
 }
 
 @Schema({ collection: 'films' })
 export class Film extends Document {
   @Prop({ required: true, unique: true })
-  id: string;
+  id: string;  // Уникальный ID фильма
 
   @Prop({ required: true })
-  title: string;
+  title: string;  // Название фильма
 
   @Prop({ required: true })
-  director: string;
+  director: string;  // Режиссёр
 
   @Prop({ required: true })
-  rating: number;
+  rating: number;  // Рейтинг
 
   @Prop({ type: [String], required: true })
-  tags: string[];
+  tags: string[];  // Жанры
 
   @Prop({ required: true })
-  about: string;
+  about: string;  // Краткое описание
 
   @Prop({ required: true })
-  description: string;
+  description: string;  // Полное описание
 
   @Prop({ required: true })
-  image: string;
+  image: string;  // URL постера
 
   @Prop({ required: true })
-  cover: string;
+  cover: string;  // URL обложки
 
   @Prop({ type: [Session], required: true })
-  schedule: Session[];
+  schedule: Session[];  // Массив сеансов
 }
 
 export const FilmSchema = SchemaFactory.createForClass(Film);

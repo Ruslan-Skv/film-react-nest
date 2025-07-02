@@ -15,7 +15,6 @@ export class FilmsService {
 
     const items: FilmItemDto[] = films.map(film => ({
       id: film.id,
-      // id: film._id.toString(),
       rating: film.rating,
       director: film.director,
       tags: film.tags,
