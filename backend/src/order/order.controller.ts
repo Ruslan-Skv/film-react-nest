@@ -4,13 +4,10 @@ import { CreateOrderDto, OrderResponseDto } from './dto/order.dto';
 
 @Controller('order')
 export class OrderController {
-    constructor(private readonly orderService: OrderService) {}
+  constructor(private readonly orderService: OrderService) {}
 
-    @Post()
-    async create(@Body() order: CreateOrderDto): Promise<OrderResponseDto> {
-        return this.orderService.create(order.tickets);
-    }
+  @Post()
+  async create(@Body() order: CreateOrderDto): Promise<OrderResponseDto> {
+    return this.orderService.create(order.tickets);
+  }
 }
-
-
-

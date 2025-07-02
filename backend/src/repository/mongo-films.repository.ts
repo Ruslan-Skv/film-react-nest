@@ -6,7 +6,9 @@ import { Film } from 'src/films/schemas/film.schema';
 
 @Injectable()
 export class MongoFilmsRepository implements IFilmsRepository {
-  constructor(@InjectModel(Film.name) private readonly filmModel: Model<Film>) {}
+  constructor(
+    @InjectModel(Film.name) private readonly filmModel: Model<Film>,
+  ) {}
 
   async findAll(): Promise<Film[]> {
     return this.filmModel.find().lean().exec();

@@ -4,17 +4,16 @@ import { Film } from './schemas/film.schema';
 import { Model } from 'mongoose';
 import { FilmItemDto, FilmResponseDto } from './dto/film.dto';
 import { ScheduleResponseDto, SessionDto } from './dto/schedule.dto';
-import { IFilmsRepository } from 'src/repository/films.repository';
 
 @Injectable()
 export class FilmsService {
   constructor(@InjectModel(Film.name) private filmModel: Model<Film>) {}
-    
+
   async findAll(): Promise<FilmResponseDto> {
     const films = await this.filmModel.find().lean().exec();
     console.log('Raw films data:', films);
 
-    const items: FilmItemDto[] = films.map(film => ({
+    const items: FilmItemDto[] = films.map((film) => ({
       id: film.id,
       rating: film.rating,
       director: film.director,
@@ -23,34 +22,34 @@ export class FilmsService {
       about: film.about,
       description: film.description,
       image: film.image,
-      cover: film.cover
+      cover: film.cover,
     }));
 
     return {
       total: items.length,
-      items
+      items,
     };
   }
 
- async getSchedule(id: string): Promise<ScheduleResponseDto> {
+  async getSchedule(id: string): Promise<ScheduleResponseDto> {
     const film = await this.filmModel.findOne({ id }).exec();
     if (!film) {
       throw new NotFoundException('Film not found');
     }
-    
-    const items: SessionDto[] = film.schedule.map(session => ({
+
+    const items: SessionDto[] = film.schedule.map((session) => ({
       id: session.id,
       daytime: session.daytime,
       hall: session.hall,
       rows: session.rows,
       seats: session.seats,
       price: session.price,
-      taken: session.taken
+      taken: session.taken,
     }));
 
     return {
       total: items.length,
-      items
+      items,
     };
   }
 }
@@ -58,7 +57,7 @@ export class FilmsService {
 // @Injectable()
 // export class FilmsService {
 //   constructor(private readonly filmsRepository: IFilmsRepository) {}
-    
+
 //   async findAll(): Promise<FilmResponseDto> {
 //     const films = await this.filmsRepository.findAll();
 //     console.log('Raw films data:', films);
@@ -86,7 +85,7 @@ export class FilmsService {
 //     if (!film) {
 //       throw new NotFoundException('Film not found');
 //     }
-    
+
 //     const items: SessionDto[] = film.schedule.map(session => ({
 //       id: session.id,
 //       daytime: session.daytime,
@@ -103,4 +102,3 @@ export class FilmsService {
 //     };
 //   }
 // }
-

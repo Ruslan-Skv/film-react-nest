@@ -1,19 +1,19 @@
 //TODO реализовать DTO для /orders
-import { Type } from "class-transformer";
-import { 
-  IsArray, 
-  IsEmail, 
-  IsISO8601, 
-  IsNumber, 
-  IsString, 
-  IsUUID, 
-  Min, 
+import { Type } from 'class-transformer';
+import {
+  IsArray,
+  IsEmail,
+  IsISO8601,
+  IsNumber,
+  IsString,
+  IsUUID,
+  Min,
   ValidateNested,
   IsNotEmpty,
   IsPhoneNumber,
   IsPositive,
-  ArrayMinSize
-} from "class-validator";
+  ArrayMinSize,
+} from 'class-validator';
 
 export class TicketDto {
   @IsUUID()
@@ -95,4 +95,3 @@ export class OrderItemDto {
   @Min(0)
   price: number;
 }
-

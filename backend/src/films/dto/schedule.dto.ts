@@ -1,10 +1,10 @@
-import { 
-  IsArray, 
-  IsNumber, 
-  IsString, 
-  IsNotEmpty, 
-  IsPositive, 
-  ValidateNested, 
+import {
+  IsArray,
+  IsNumber,
+  IsString,
+  IsNotEmpty,
+  IsPositive,
+  ValidateNested,
   ArrayMinSize,
 } from 'class-validator';
 import { Type } from 'class-transformer';

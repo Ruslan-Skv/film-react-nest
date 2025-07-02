@@ -24,10 +24,10 @@ export class InMemoryFilmsRepository implements IFilmsRepository {
           rows: 10,
           seats: 100,
           price: 300,
-          taken: []
-        }
-      ]
-    } as Film
+          taken: [],
+        },
+      ],
+    } as Film,
   ];
 
   async findAll(): Promise<Film[]> {
@@ -35,6 +35,6 @@ export class InMemoryFilmsRepository implements IFilmsRepository {
   }
 
   async findById(id: string): Promise<Film | null> {
-    return this.films.find(film => film.id === id) || null;
+    return this.films.find((film) => film.id === id) || null;
   }
 }

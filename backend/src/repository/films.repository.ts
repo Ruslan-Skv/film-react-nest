@@ -1,4 +1,4 @@
-import { Film } from "src/films/schemas/film.schema";
+import { Film } from 'src/films/schemas/film.schema';
 
 export interface IFilmsRepository {
   findAll(): Promise<Film[]>;
