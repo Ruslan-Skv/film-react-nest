@@ -6,6 +6,7 @@ import { join } from 'path';
 import { MongooseModule } from '@nestjs/mongoose';
 import { FilmsModule } from './films/films.module';
 import { OrdersModule } from './order/orders.module';
+import { DatabaseModule } from './database/database.module';
 
 @Module({
   imports: [
@@ -13,7 +14,8 @@ import { OrdersModule } from './order/orders.module';
       isGlobal: true,
       cache: true,
     }),
-    MongooseModule.forRoot(process.env.DATABASE_URL + '/afisha'),
+    // MongooseModule.forRoot(process.env.DATABASE_URL + '/afisha'),
+    DatabaseModule,
     ServeStaticModule.forRoot({
       // rootPath: join(__dirname, '..', 'public', 'content', 'afisha'),
       // serveRoot: '/content/afisha',
@@ -22,9 +24,11 @@ import { OrdersModule } from './order/orders.module';
       exclude: ['/api/*'],
     }),
     FilmsModule,
-    OrdersModule,
+    OrdersModule    
   ],
   controllers: [],
   providers: [configProvider],
 })
 export class AppModule {}
+
+

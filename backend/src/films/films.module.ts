@@ -3,19 +3,30 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Film, FilmSchema } from './schemas/film.schema';
 import { FilmsController } from './films.controller';
 import { FilmsService } from './films.service';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { FilmsRepository } from 'src/repository/films.repository';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([
-      { name: Film.name, schema: FilmSchema, collection: 'films' },
-    ]),
+    // MongooseModule.forFeature([
+    //   { name: Film.name, schema: FilmSchema, collection: 'films' },
+    // ]),
+    TypeOrmModule.forFeature([Film])
   ],
   exports: [
     MongooseModule.forFeature([{ name: Film.name, schema: FilmSchema }]),
   ],
   controllers: [FilmsController],
-  providers: [FilmsService],
+  providers: [FilmsService,
+    {
+      provide: 'IFilmsRepository',
+      useClass: FilmsRepository,
+    }
+  ],
 })
+export class FilmsModule {}
+
+
 
 // const useInMemory = process.env.USE_IN_MEMORY === 'true';
 
@@ -37,4 +48,4 @@ import { FilmsService } from './films.service';
 //   ],
 //   exports: [FilmsService]
 // })
-export class FilmsModule {}
+

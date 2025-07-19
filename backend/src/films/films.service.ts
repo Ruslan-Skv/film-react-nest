@@ -4,13 +4,16 @@ import { Film } from './schemas/film.schema';
 import { Model } from 'mongoose';
 import { FilmItemDto, FilmResponseDto } from './dto/film.dto';
 import { ScheduleResponseDto, SessionDto } from './dto/schedule.dto';
+import { IFilmsRepository } from 'src/repository/films.repository';
 
 @Injectable()
 export class FilmsService {
-  constructor(@InjectModel(Film.name) private filmModel: Model<Film>) {}
+  // constructor(@InjectModel(Film.name) private filmModel: Model<Film>) {}
+  constructor(private readonly repository: IFilmsRepository) {}
 
   async findAll(): Promise<FilmResponseDto> {
-    const films = await this.filmModel.find().lean().exec();
+    // const films = await this.filmModel.find().lean().exec();
+    const films = await this.repository.findAll();
     console.log('Raw films data:', films);
 
     const items: FilmItemDto[] = films.map((film) => ({
@@ -32,12 +35,13 @@ export class FilmsService {
   }
 
   async getSchedule(id: string): Promise<ScheduleResponseDto> {
-    const film = await this.filmModel.findOne({ id }).exec();
+    // const film = await this.filmModel.findOne({ id }).exec();
+    const film = await this.repository.findById(id);
     if (!film) {
       throw new NotFoundException('Film not found');
     }
 
-    const items: SessionDto[] = film.schedule.map((session) => ({
+    const items: SessionDto[] = film.schedules.map((session) => ({
       id: session.id,
       daytime: session.daytime,
       hall: session.hall,
