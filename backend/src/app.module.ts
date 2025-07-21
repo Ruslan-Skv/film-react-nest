@@ -6,14 +6,23 @@ import { join } from 'path';
 import { FilmsModule } from './films/films.module';
 import { OrdersModule } from './order/orders.module';
 import { DatabaseModule } from './database/database.module';
+import { MongooseModule } from '@nestjs/mongoose';
+
+const databaseModule = process.env.DATABASE_DRIVER === 'mongodb' 
+  ? MongooseModule.forRoot(process.env.MONGO_URI, {
+      dbName: process.env.MONGO_DATABASE,
+    })
+  : DatabaseModule;
+
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
       cache: true,
+      envFilePath: '.env',
     }),
-    DatabaseModule,
+    databaseModule,
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'public'),
       serveRoot: '/',
