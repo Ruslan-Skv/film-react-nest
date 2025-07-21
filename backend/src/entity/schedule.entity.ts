@@ -1,9 +1,9 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { Film } from "./film.entity";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Film } from './film.entity';
 
 @Entity()
 export class Schedule {
-//   @Column({ primary: true })
+  //   @Column({ primary: true })
   @PrimaryGeneratedColumn('uuid')
   id: string;
 

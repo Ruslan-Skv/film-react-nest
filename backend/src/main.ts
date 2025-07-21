@@ -15,9 +15,9 @@ async function bootstrap() {
   // await app.listen(3000);
   try {
     await app.listen(3000);
-    console.log('Connected to MongoDB');
+    console.log('Connected to PostgreSQL database');
   } catch (error) {
-    console.error('MongoDB connection error:', error);
+    console.error('Database connection error:', error);
   }
 }
 bootstrap();

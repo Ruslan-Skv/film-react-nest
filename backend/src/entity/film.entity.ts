@@ -1,5 +1,5 @@
-import { Column, Entity, Index, OneToMany, PrimaryColumn } from "typeorm";
-import { Schedule } from "./schedule.entity";
+import { Column, Entity, Index, OneToMany, PrimaryColumn } from 'typeorm';
+import { Schedule } from './schedule.entity';
 
 @Entity()
 export class Film {
@@ -31,6 +31,6 @@ export class Film {
   @Column()
   cover: string; // URL обложки
 
-  @OneToMany(() => Schedule, schedule => schedule.film, { cascade: true })
+  @OneToMany(() => Schedule, (schedule) => schedule.film, { cascade: true })
   schedules: Schedule[]; // Массив сеансов
 }

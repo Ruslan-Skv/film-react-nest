@@ -3,7 +3,6 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { ConfigModule } from '@nestjs/config';
 import { configProvider } from './app.config.provider';
 import { join } from 'path';
-import { MongooseModule } from '@nestjs/mongoose';
 import { FilmsModule } from './films/films.module';
 import { OrdersModule } from './order/orders.module';
 import { DatabaseModule } from './database/database.module';
@@ -14,21 +13,20 @@ import { DatabaseModule } from './database/database.module';
       isGlobal: true,
       cache: true,
     }),
-    // MongooseModule.forRoot(process.env.DATABASE_URL + '/afisha'),
     DatabaseModule,
     ServeStaticModule.forRoot({
-      // rootPath: join(__dirname, '..', 'public', 'content', 'afisha'),
-      // serveRoot: '/content/afisha',
       rootPath: join(__dirname, '..', 'public'),
       serveRoot: '/',
       exclude: ['/api/*'],
+      serveStaticOptions: {
+        maxAge: 86400000, // 1 день
+        cacheControl: true,
+      },
     }),
     FilmsModule,
-    OrdersModule    
+    OrdersModule,
   ],
   controllers: [],
   providers: [configProvider],
 })
 export class AppModule {}
-
-

@@ -1,51 +1,22 @@
 import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
-import { Film, FilmSchema } from './schemas/film.schema';
 import { FilmsController } from './films.controller';
 import { FilmsService } from './films.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { FilmsRepository } from 'src/repository/films.repository';
+import { Film } from 'src/entity/film.entity';
+import { Schedule } from 'src/entity/schedule.entity';
 
 @Module({
-  imports: [
-    // MongooseModule.forFeature([
-    //   { name: Film.name, schema: FilmSchema, collection: 'films' },
-    // ]),
-    TypeOrmModule.forFeature([Film])
-  ],
-  exports: [
-    MongooseModule.forFeature([{ name: Film.name, schema: FilmSchema }]),
-  ],
+  imports: [TypeOrmModule.forFeature([Film, Schedule])],
   controllers: [FilmsController],
-  providers: [FilmsService,
+  providers: [
+    FilmsRepository,
+    FilmsService,
     {
       provide: 'IFilmsRepository',
-      useClass: FilmsRepository,
-    }
+      useExisting: FilmsRepository,
+    },
   ],
+  exports: [FilmsService, FilmsRepository, 'IFilmsRepository'],
 })
 export class FilmsModule {}
-
-
-
-// const useInMemory = process.env.USE_IN_MEMORY === 'true';
-
-// @Module({
-//   imports: [
-//     MongooseModule.forFeature([{
-//       name: Film.name,
-//       schema: FilmSchema,
-//       collection: 'films'
-//     }])
-//   ],
-//   controllers: [FilmsController],
-//   providers: [
-//     FilmsService,
-//     {
-//       provide: 'IFilmsRepository',
-//       useClass: useInMemory ? InMemoryFilmsRepository : MongoFilmsRepository
-//     }
-//   ],
-//   exports: [FilmsService]
-// })
-

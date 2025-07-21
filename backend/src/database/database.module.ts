@@ -17,7 +17,7 @@ import { Schedule } from 'src/entity/schedule.entity';
         password: config.get('DATABASE_PASSWORD'),
         database: config.get('DATABASE_NAME'),
         entities: [Film, Schedule],
-        synchronize: true, 
+        synchronize: true,
         logging: true,
       }),
     }),
