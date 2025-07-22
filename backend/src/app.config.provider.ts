@@ -1,23 +1,57 @@
 import { ConfigModule } from '@nestjs/config';
 import 'dotenv/config';
 
+import { ConfigService } from '@nestjs/config';
+
 export const configProvider = {
-  imports: [ConfigModule.forRoot()],
   provide: 'CONFIG',
-  useValue: <AppConfig>{
-    //TODO прочесть переменнные среды
+  useFactory: (configService: ConfigService) => ({
     database: {
-      driver: process.env.DATABASE_DRIVER,
-      url: process.env.DATABASE_URL,
+      driver: configService.get('DATABASE_DRIVER'),
+      postgres: {
+        host: configService.get('POSTGRES_HOST'),
+        port: configService.get('POSTGRES_PORT'),
+      },
+      mongodb: {
+        uri: configService.get('MONGO_URI'),
+        dbName: configService.get('MONGO_DATABASE'),
+      },
     },
-  },
+  }),
+  inject: [ConfigService],
 };
 
 export interface AppConfig {
-  database: AppConfigDatabase;
+  database: {
+    driver: string;
+    postgres?: {
+      host: string;
+      port: number;
+    };
+    mongodb?: {
+      uri: string;
+      dbName: string;
+    };
+  };
 }
 
-export interface AppConfigDatabase {
-  driver: string;
-  url: string;
-}
+// export const configProvider = {
+//   imports: [ConfigModule.forRoot()],
+//   provide: 'CONFIG',
+//   useValue: <AppConfig>{
+//     //TODO прочесть переменнные среды
+//     database: {
+//       driver: process.env.DATABASE_DRIVER,
+//       url: process.env.DATABASE_URL,
+//     },
+//   },
+// };
+
+// export interface AppConfig {
+//   database: AppConfigDatabase;
+// }
+
+// export interface AppConfigDatabase {
+//   driver: string;
+//   url: string;
+// }

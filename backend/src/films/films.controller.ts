@@ -19,6 +19,6 @@ export class FilmsController {
       throw new BadRequestException('Film ID is required');
     }
     console.log('Получение сеансов фильма');
-    return this.filmsService.getSchedule(id);
+    return this.filmsService.findById(id);
   }
 }
