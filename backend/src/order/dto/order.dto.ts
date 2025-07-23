@@ -15,6 +15,7 @@ import {
   ArrayMinSize,
 } from 'class-validator';
 
+// DTO для билета в заказе
 export class TicketDto {
   @IsUUID()
   @IsNotEmpty()
@@ -43,6 +44,7 @@ export class TicketDto {
   price: number;
 }
 
+// DTO для создания заказа
 export class CreateOrderDto {
   @IsEmail()
   @IsNotEmpty()
@@ -59,6 +61,7 @@ export class CreateOrderDto {
   tickets: TicketDto[];
 }
 
+// DTO для ответа с информацией о заказе
 export class OrderResponseDto {
   @IsNumber()
   @IsPositive()
@@ -70,9 +73,10 @@ export class OrderResponseDto {
   items: OrderItemDto[];
 }
 
+// DTO для элемента заказа в ответе
 export class OrderItemDto {
   @IsUUID()
-  id: string;
+  id: string; // UUID элемента заказа (дополнительное поле в сравнении с TicketDto)
 
   @IsUUID()
   film: string;

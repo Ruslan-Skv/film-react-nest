@@ -1,57 +1,46 @@
-import { ConfigModule } from '@nestjs/config';
-import 'dotenv/config';
+// import 'dotenv/config'; // Импорт dotenv для загрузки переменных окружения из .env файла
+// import { ConfigService } from '@nestjs/config'; // Импорт ConfigService для доступа к переменным окружения
 
-import { ConfigService } from '@nestjs/config';
-
-export const configProvider = {
-  provide: 'CONFIG',
-  useFactory: (configService: ConfigService) => ({
-    database: {
-      driver: configService.get('DATABASE_DRIVER'),
-      postgres: {
-        host: configService.get('POSTGRES_HOST'),
-        port: configService.get('POSTGRES_PORT'),
-      },
-      mongodb: {
-        uri: configService.get('MONGO_URI'),
-        dbName: configService.get('MONGO_DATABASE'),
-      },
-    },
-  }),
-  inject: [ConfigService],
-};
-
-export interface AppConfig {
-  database: {
-    driver: string;
-    postgres?: {
-      host: string;
-      port: number;
-    };
-    mongodb?: {
-      uri: string;
-      dbName: string;
-    };
-  };
-}
-
+// // Определение провайдера конфигурации
 // export const configProvider = {
-//   imports: [ConfigModule.forRoot()],
+//   // Уникальный токен, под которым будет доступна конфигурация
 //   provide: 'CONFIG',
-//   useValue: <AppConfig>{
-//     //TODO прочесть переменнные среды
+//   // Фабричная функция, которая создает объект конфигурации
+//   useFactory: (configService: ConfigService) => ({ //Фабричная функция получает ConfigService как зависимость.Использует ConfigService для чтения переменных окружения. Формирует структурированный объект конфигурации.
 //     database: {
-//       driver: process.env.DATABASE_DRIVER,
-//       url: process.env.DATABASE_URL,
+//       // Получаем драйвер БД из переменных окружения
+//       driver: configService.get('DATABASE_DRIVER'),
+//       // Конфигурация для PostgreSQL (если используется)
+//       postgres: {
+//         host: configService.get('POSTGRES_HOST'), // Хост PostgreSQL из переменных окружения
+//         port: configService.get('POSTGRES_PORT'), // Порт PostgreSQL из переменных окружения
+//       },
+//       // Конфигурация для MongoDB (если используется)
+//       mongodb: {
+//         uri: configService.get('MONGO_URI'), // URI подключения к MongoDB из переменных окружения
+//         dbName: configService.get('MONGO_DATABASE'), // Имя базы данных MongoDB из переменных окружения
+//       },
 //     },
-//   },
+//   }),
+//   // Указываем зависимости, которые нужно внедрить в фабричную функцию
+//   // Здесь мы зависим от ConfigService
+//   inject: [ConfigService],
 // };
 
+// // Интерфейс для типизации объекта конфигурации
 // export interface AppConfig {
-//   database: AppConfigDatabase;
+//   database: {
+//     driver: string; // Драйвер базы данных (например, 'postgres' или 'mongodb')
+//     // Опциональная конфигурация для PostgreSQL
+//     postgres?: {
+//       host: string; // Хост сервера PostgreSQL
+//       port: number; // Порт сервера PostgreSQL
+//     };
+//     // Опциональная конфигурация для MongoDB
+//     mongodb?: {
+//       uri: string; // Connection string для MongoDB
+//       dbName: string; // Имя базы данных MongoDB
+//     };
+//   };
 // }
 
-// export interface AppConfigDatabase {
-//   driver: string;
-//   url: string;
-// }
