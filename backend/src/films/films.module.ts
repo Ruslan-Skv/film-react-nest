@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
 import { FilmsController } from './films.controller';
 import { FilmsService } from './films.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -16,7 +16,17 @@ import { Schedule } from 'src/entity/schedule.entity';
       provide: 'IFilmsRepository',
       useExisting: FilmsRepository,
     },
+    {
+      provide: 'FILMS_MODULE_LOGGER',
+      useValue: new Logger('FilmsModule'),
+    },
   ],
   exports: [FilmsService, FilmsRepository, 'IFilmsRepository'],
 })
-export class FilmsModule {}
+export class FilmsModule {
+   private readonly logger = new Logger(FilmsModule.name);
+
+  constructor() {
+    this.logger.log('Films module initialized');
+  }
+}

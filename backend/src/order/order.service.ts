@@ -2,6 +2,7 @@ import {
   ConflictException,
   Inject,
   Injectable,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import {
@@ -17,6 +18,7 @@ import { Schedule } from 'src/entity/schedule.entity';
 
 @Injectable()
 export class OrderService {
+   private readonly logger = new Logger(OrderService.name);
   constructor(
     @Inject('IFilmsRepository')
     private readonly filmsRepository: IFilmsRepository,
@@ -26,65 +28,79 @@ export class OrderService {
   ) {}
 
   async create(tickets: CreateOrderDto['tickets']): Promise<OrderResponseDto> {
+    this.logger.log('Creating new order');
+
     if (!tickets || tickets.length === 0) {
+      this.logger.warn('Order creation failed: no tickets provided');
       throw new NotFoundException('No tickets provided');
     }
 
     const items: OrderItemDto[] = [];
     const schedulesToUpdate: Schedule[] = [];
 
-    for (const ticket of tickets) {
-      // Находим фильм с расписанием
-      const film = await this.filmsRepository.findById(ticket.film);
+    try {
+      for (const ticket of tickets) {
+        this.logger.debug(`Processing ticket for film: ${ticket.film}, session: ${ticket.session}`);
 
-      if (!film) {
-        throw new NotFoundException(`Film ${ticket.film} not found`);
+        const film = await this.filmsRepository.findById(ticket.film);
+
+        if (!film) {
+          this.logger.warn(`Film not found: ${ticket.film}`);
+          throw new NotFoundException(`Film ${ticket.film} not found`);
+        }
+
+        const session = film.schedules.find((s) => s.id === ticket.session);
+        this.logger.debug(`Session search result: ${session ? 'found' : 'not found'}`);
+
+        console.log('Session search:', {
+          filmId: film.id,
+          sessionId: ticket.session,
+          available: film.schedules.map((s) => s.id),
+        });
+
+        if (!session) {
+          this.logger.warn(`Session not found: ${ticket.session} in film ${film.title}`);
+          throw new NotFoundException(
+            `Session ${ticket.session} not found in film ${film.title}`,
+          );
+        }
+
+        // Проверяем занятость места
+        const seatKey = `${ticket.row}:${ticket.seat}`;
+        if (session.taken.includes(seatKey)) {
+          this.logger.warn(`Seat already taken: ${seatKey} in session ${session.id}`);
+          throw new ConflictException(`Seat ${seatKey} already taken`);
+        }
+
+        // Обновляем список занятых мест
+        session.taken = [...session.taken, seatKey];
+        schedulesToUpdate.push(session);
+
+        items.push({
+          film: ticket.film,
+          session: ticket.session,
+          daytime: session.daytime, // Берем из расписания
+          row: ticket.row,
+          seat: ticket.seat,
+          price: session.price, // Берем из расписания
+          id: randomUUID(),
+        });
       }
 
-      // Находим конкретный сеанс
-      const session = film.schedules.find((s) => s.id === ticket.session);
-
-      console.log('Session search:', {
-        filmId: film.id,
-        sessionId: ticket.session,
-        available: film.schedules.map((s) => s.id),
-      });
-
-      if (!session) {
-        throw new NotFoundException(
-          `Session ${ticket.session} not found in film ${film.title}`,
-        );
+      // Сохраняем все изменения в расписаниях одной транзакцией
+      if (schedulesToUpdate.length > 0) {
+        this.logger.log(`Updating ${schedulesToUpdate.length} schedules`);
+        await this.scheduleRepository.save(schedulesToUpdate);
       }
 
-      // Проверяем занятость места
-      const seatKey = `${ticket.row}:${ticket.seat}`;
-      if (session.taken.includes(seatKey)) {
-        throw new ConflictException(`Seat ${seatKey} already taken`);
-      }
-
-      // Обновляем список занятых мест
-      session.taken = [...session.taken, seatKey];
-      schedulesToUpdate.push(session);
-
-      items.push({
-        film: ticket.film,
-        session: ticket.session,
-        daytime: session.daytime, // Берем из расписания
-        row: ticket.row,
-        seat: ticket.seat,
-        price: session.price, // Берем из расписания
-        id: randomUUID(),
-      });
+      this.logger.log(`Order created successfully with ${items.length} items`);
+      return {
+        total: items.length,
+        items,
+      };
+    } catch (error) {
+      this.logger.error(`Order creation failed: ${error.message}`, error.stack);
+      throw error;
     }
-
-    // Сохраняем все изменения в расписаниях одной транзакцией
-    if (schedulesToUpdate.length > 0) {
-      await this.scheduleRepository.save(schedulesToUpdate);
-    }
-
-    return {
-      total: items.length,
-      items,
-    };
   }
 }
