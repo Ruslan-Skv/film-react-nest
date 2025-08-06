@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Film } from 'src/entity/film.entity';
+import { Film } from '../entity/film.entity';
 import { Repository } from 'typeorm';
 
 export interface IFilmsRepository {

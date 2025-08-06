@@ -1,7 +1,7 @@
 import { Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { FilmItemDto, FilmResponseDto } from './dto/film.dto';
 import { ScheduleResponseDto, SessionDto } from './dto/schedule.dto';
-import { IFilmsRepository } from 'src/repository/films.repository';
+import { IFilmsRepository } from '../repository/films.repository';
 
 @Injectable()
 export class FilmsService {

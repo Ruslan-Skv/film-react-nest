@@ -12,9 +12,9 @@ import {
 } from './dto/order.dto';
 import { randomUUID } from 'crypto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { IFilmsRepository } from 'src/repository/films.repository';
+import { IFilmsRepository } from '../repository/films.repository';
 import { Repository } from 'typeorm';
-import { Schedule } from 'src/entity/schedule.entity';
+import { Schedule } from '../entity/schedule.entity';
 
 @Injectable()
 export class OrderService {

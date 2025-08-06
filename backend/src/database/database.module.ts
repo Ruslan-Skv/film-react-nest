@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Film } from 'src/entity/film.entity';
-import { Schedule } from 'src/entity/schedule.entity';
+import { Film } from '../entity/film.entity';
+import { Schedule } from '../entity/schedule.entity';
 
 @Module({
   imports: [
