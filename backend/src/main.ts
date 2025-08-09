@@ -16,13 +16,25 @@ async function bootstrap() {
   const logger = LoggerFactory.create(loggerType);
 
   app.setGlobalPrefix('api/afisha');
-  app.enableCors({
-    origin: 'http://localhost:5173',
+  // app.enableCors({
+  //   origin: 'http://localhost:5173',
+  //   credentials: true,
+  //   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  // });
+  const corsOptions = {
+    origin: process.env.NODE_ENV === 'production' 
+      ? ['http://film.nomoreparties.site', 'https://film.nomoreparties.site']
+      : 'http://localhost:5173',
     credentials: true,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-  });
+  };
+  app.enableCors(corsOptions);
   app.useLogger(logger);
   app.useGlobalPipes(new ValidationPipe());
+
+  app.use('/api/afisha/healthcheck', (req, res) => {
+    res.status(200).json({ status: 'ok' });
+  });
 
   try {
     // Проверка подключения к БД
