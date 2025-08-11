@@ -24,7 +24,8 @@ import { Schedule } from '../entity/schedule.entity';
         // ssl: process.env.NODE_ENV === 'production' ? { 
         //   rejectUnauthorized: false 
         // } : false,
-        synchronize: config.get('NODE_ENV') !== 'production',
+        synchronize: false,
+        // synchronize: config.get('NODE_ENV') !== 'production',
         logging: config.get('LOGGER_TYPE') === 'dev',
         poolSize: 10,
         extra: {

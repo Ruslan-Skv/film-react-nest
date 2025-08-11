@@ -7,7 +7,7 @@ export class Schedule {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
+  @Column({ nullable: true })
   daytime: string; // Время сеанса (например, "14:00")
 
   @Column('int')
