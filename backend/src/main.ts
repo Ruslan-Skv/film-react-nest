@@ -6,6 +6,7 @@ import { DataSource } from 'typeorm';
 import { Connection } from 'mongoose';
 import { getConnectionToken } from '@nestjs/mongoose';
 import { LoggerFactory } from './logging/logger.factory';
+import { Request, Response } from 'express';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -15,7 +16,22 @@ async function bootstrap() {
   const loggerType = process.env.LOGGER_TYPE as 'dev' | 'json' | 'tskv' || 'dev';
   const logger = LoggerFactory.create(loggerType);
 
+   // Получаем экземпляр Express
+  const httpAdapter = app.getHttpAdapter();
+  const expressInstance = httpAdapter.getInstance();
+
+  // Healthcheck без префикса
+  expressInstance.get('/healthcheck', (req: Request, res: Response) => {
+    res.status(200).json({ status: 'ok' });
+  });
+
+  // Установка глобального префикса для API
   app.setGlobalPrefix('api/afisha');
+
+
+  // app.get('/healthcheck', (req, res) => {
+  //   res.json({ status: 'ok' });
+  // });
   // app.enableCors({
   //   origin: 'http://localhost:5173',
   //   credentials: true,
@@ -31,10 +47,6 @@ async function bootstrap() {
   app.enableCors(corsOptions);
   app.useLogger(logger);
   app.useGlobalPipes(new ValidationPipe());
-
-  app.use('/api/afisha/healthcheck', (req, res) => {
-    res.status(200).json({ status: 'ok' });
-  });
 
   try {
     // Проверка подключения к БД
