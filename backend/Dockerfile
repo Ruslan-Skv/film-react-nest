@@ -28,7 +28,7 @@ RUN npm ci --only=production
 
 # Копируем собранные файлы из builder
 COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/.env ./
+# COPY --from=builder /app/.env ./
 
 # Открываем порт
 EXPOSE 3000
