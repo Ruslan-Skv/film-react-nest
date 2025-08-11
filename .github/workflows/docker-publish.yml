@@ -4,7 +4,7 @@ on: [push]
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
+  IMAGE_NAME: film-react-nest
 
 jobs:
   build-and-publish:
@@ -30,16 +30,16 @@ jobs:
       - name: Build and push frontend
         uses: docker/build-push-action@v5
         with:
-          context: .
-          file: ./Dockerfile.frontend
+          context: ./frontend
+          file: ./frontend/Dockerfile
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/frontend:latest
           push: true
 
       - name: Build and push backend
         uses: docker/build-push-action@v5
         with:
-          context: .
-          file: ./Dockerfile.backend
+          context: ./backend
+          file: ./backend/Dockerfile
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/backend:latest
           push: true
 
