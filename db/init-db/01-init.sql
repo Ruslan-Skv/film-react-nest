@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS schedule (
     rows INTEGER NOT NULL,
     seats INTEGER NOT NULL,
     price INTEGER NOT NULL,
-    taken JSONB,
+    taken TEXT NOT NULL,
     "filmId" UUID NOT NULL,
     CONSTRAINT fk_film
     FOREIGN KEY("filmId") 
