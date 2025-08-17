@@ -1,17 +1,21 @@
 services:
   backend:
-    image: ghcr.io/ruslan-skv/backend:latest
+    build: ./backend
     container_name: backend
     depends_on:
       db:
         condition: service_healthy
     networks:
+      # - backend_network
       - app_network  
+      # - frontend_network
     environment:
       - POSTGRES_HOST=db
     env_file:
       - backend/.env
     restart: unless-stopped
+    # ports:
+    #   - "3000:3000"  # Для отладки
     healthcheck:
       test: "wget -nv -t1 --spider 'http://localhost:3000/'"
       interval: 1m30s
@@ -20,9 +24,12 @@ services:
       start_period: 40s
 
   frontend:
-    image: ghcr.io/ruslan-skv/frontend:latest 
+    build: 
+      context: ./frontend
+      target: builder 
     container_name: frontend
     networks:
+      # - frontend_network
       - app_network
     volumes:
       - frontend_dist:/app/dist
@@ -33,14 +40,15 @@ services:
     image: postgres:15
     container_name: postgres
     networks:
+      # - backend_network
       - app_network
     environment:
       POSTGRES_USER: student
       POSTGRES_PASSWORD: student
       POSTGRES_DB: afisha
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./db/init-db:/docker-entrypoint-initdb.d
+      - postgres_data:/var/lib/postgresql/data  # монтирование тома для хранения данных СУБД PostgreSQL. Автоматически создаётся Docker'ом при первом запуске. Сохраняет данные между перезапусками контейнера
+      - ./db/init-db:/docker-entrypoint-initdb.d  # db/init-db - подкаталог, где хранятся SQL-скрипты. При первом запуске контейнера эти скрипты выполнятся автоматически.
     restart: unless-stopped
     ports:
       - "5432:5432" 
@@ -54,6 +62,7 @@ services:
     image: dpage/pgadmin4
     container_name: pgadmin
     networks:
+      # - backend_network
       - app_network
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@example.com
@@ -67,14 +76,14 @@ services:
     restart: unless-stopped
 
   nginx:
-    image: ghcr.io/ruslan-skv/nginx:latest
+    build: ./nginx
     depends_on:
       - frontend
       - backend
     ports:
       - "80:80"
     volumes:
-      - frontend_dist:/usr/share/nginx/html:ro  
+      - frontend_dist:/usr/share/nginx/html:ro  # Монтируем собранный фронтенд
     networks:
       - app_network
     
@@ -86,3 +95,7 @@ volumes:
 networks:
   app_network:
     driver: bridge
+  # backend_network:  # Сеть для бэкенда, БД и pgAdmin и nginx
+  #   driver: bridge
+  # frontend_network:  # Сеть для фронтенда и nginx и бэкенда
+  #   driver: bridge
