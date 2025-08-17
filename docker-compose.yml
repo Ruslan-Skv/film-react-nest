@@ -1,86 +1,107 @@
 services:
-  frontend:
-    build: ./frontend
-    environment:
-      - VITE_API_URL=/api/afisha
-      - VITE_CDN_URL=/content/afisha
-    networks:
-      - frontend_network
-
   backend:
     build: ./backend
-    environment:
-      - NODE_ENV=development
-      - DATABASE_DRIVER=postgres
-      - POSTGRES_HOST=db
-      - POSTGRES_PORT=5432
-      - POSTGRES_USER=student
-      - POSTGRES_PASSWORD=student
-      - POSTGRES_DB=afisha
-      - LOGGER_TYPE=${LOGGER_TYPE:-dev}
-    env_file:
-      - ./backend/.env
+    container_name: backend
     depends_on:
-      - db
-    ports:
-      - "3000:3000"  # Для отладки
+      db:
+        condition: service_healthy
     networks:
-      - backend_network  
-      - frontend_network
+      # - backend_network
+      - app_network  
+      # - frontend_network
+    environment:
+      - POSTGRES_HOST=db
+    env_file:
+      - backend/.env
+    restart: unless-stopped
+    # ports:
+    #   - "3000:3000"  # Для отладки
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000/api/healthcheck"]
-      interval: 30s
+      test: "wget -nv -t1 --spider 'http://localhost:3000/'"
+      interval: 1m30s
       timeout: 10s
       retries: 3
-      start_period: 5s
+      start_period: 40s
+    # healthcheck:
+    #   test: ["CMD", "curl", "-f", "http://localhost:3000/api/healthcheck"]
+    #   interval: 30s
+    #   timeout: 10s
+    #   retries: 3
+    #   start_period: 5s
 
-  nginx:
-    build:
-        context: ./nginx
-        dockerfile: Dockerfile
-    ports:
-      - "80:80"  # Основной порт
-      # - "8080:80"  # Альтернативный (если 80 занят)
-    volumes:
-      - ./frontend/dist:/usr/share/nginx/html:ro
-    depends_on:
-      - frontend
-      - backend
+  frontend:
+    build: 
+      context: ./frontend
+      target: builder 
+    container_name: frontend
     networks:
-      - frontend_network
-      - backend_network
-
+      # - frontend_network
+      - app_network
+    volumes:
+      - frontend_dist:/app/dist
+    env_file:
+      - frontend/.env
+    
   db:
     image: postgres:15
+    container_name: postgres
+    networks:
+      # - backend_network
+      - app_network
     environment:
       POSTGRES_USER: student
       POSTGRES_PASSWORD: student
       POSTGRES_DB: afisha
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./db/init-db:/docker-entrypoint-initdb.d
+      - postgres_data:/var/lib/postgresql/data  # монтирование тома для хранения данных СУБД PostgreSQL. Автоматически создаётся Docker'ом при первом запуске. Сохраняет данные между перезапусками контейнера
+      - ./db/init-db:/docker-entrypoint-initdb.d  # db/init-db - подкаталог, где хранятся SQL-скрипты. При первом запуске контейнера эти скрипты выполнятся автоматически.
+    restart: unless-stopped
     ports:
-      - "5432:5432"  # Если нужен доступ с хоста
-    networks:
-      - backend_network
+      - "5432:5432" 
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U student -d afisha"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   pgadmin:  
     image: dpage/pgadmin4
+    container_name: pgadmin
+    networks:
+      # - backend_network
+      - app_network
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@example.com
       PGADMIN_DEFAULT_PASSWORD: admin
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin/data
     ports:
-      - "8080:80"
+      - 8080:80
     depends_on:
       - db
-    networks:
-      - backend_network
+    restart: unless-stopped
 
+  nginx:
+    build: ./nginx
+    depends_on:
+      - frontend
+      - backend
+    ports:
+      - "80:80"
+    volumes:
+      - frontend_dist:/usr/share/nginx/html:ro  # Монтируем собранный фронтенд
+    networks:
+      - app_network
+    
 volumes:
   postgres_data:
+  frontend_dist:
+  pgadmin-data:
 
-networks: 
-  backend_network:  # Сеть для бэкенда, БД и pgAdmin
+networks:
+  app_network:
     driver: bridge
-  frontend_network:  # Сеть для фронтенда и nginx
-    driver: bridge
+  # backend_network:  # Сеть для бэкенда, БД и pgAdmin и nginx
+  #   driver: bridge
+  # frontend_network:  # Сеть для фронтенда и nginx и бэкенда
+  #   driver: bridge

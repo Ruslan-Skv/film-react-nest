@@ -21,17 +21,17 @@ FROM node:alpine
 WORKDIR /app
 
 # Копируем package.json и package-lock.json для production зависимостей
-COPY package.json package-lock.json ./
+COPY --from=builder /app/package.json /app/package-lock.json ./
 
 # Устанавливаем только production зависимости
 RUN npm ci --only=production
 
 # Копируем собранные файлы из builder
 COPY --from=builder /app/dist ./dist
-# COPY --from=builder /app/.env ./
 
 # Открываем порт
 EXPOSE 3000
 
 # Запускаем приложение
-CMD ["node", "dist/main"]
+# CMD ["node", "dist/main"]
+CMD ["node", "dist/main", "--host", "0.0.0.0"]

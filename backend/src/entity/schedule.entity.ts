@@ -23,10 +23,12 @@ export class Schedule {
   @Column('int')
   price: number; // Цена билета
 
-  @Column({ type: 'text' })
-  @IsString()
-  taken: string;
-
+  // @Column({ type: 'text' })
+  // @IsString()
+  // taken: string;
+  @Column('simple-array')
+  taken: string[];
+  
   @ManyToOne(() => Film, (film) => film.schedules, { onDelete: 'CASCADE' })
   film: Film;
 }

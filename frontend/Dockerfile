@@ -1,32 +1,42 @@
-# Этап сборки
-FROM node:alpine AS builder
-
+FROM node:18 AS builder
 WORKDIR /app
-
-# Копируем package.json и package-lock.json
-COPY package.json package-lock.json ./
-
-# Устанавливаем зависимости
-# RUN npm ci
-# Чистим кеш и переустанавливаем зависимости
-RUN npm cache clean --force && \
-    rm -rf node_modules && \
-    npm install --legacy-peer-deps
-
-# Копируем остальные файлы проекта
+COPY package*.json ./
+RUN npm install --legacy-peer-deps
 COPY . .
-
-# Собираем приложение
 RUN npm run build
 
-# Этап запуска
-FROM nginx:alpine
 
-# Копируем собранные файлы из builder в nginx
-COPY --from=builder /app/dist /usr/share/nginx/html
+# Этап сборки
+# FROM node:18 AS builder
 
-# Открываем порт 80
-EXPOSE 80
+# WORKDIR /app  
 
-# Запускаем nginx
-CMD ["nginx", "-g", "daemon off;"]
+# COPY package.json package-lock.json ./
+
+# # Устанавливаем зависимости
+# # RUN npm ci
+# # Чистим кеш и переустанавливаем зависимости
+# RUN npm cache clean --force && \
+#     rm -rf node_modules && \
+#     npm install --legacy-peer-deps
+
+# # Копируем остальные файлы проекта
+# COPY . .
+
+# # Собираем приложение
+# RUN npm run build
+
+# # Этап запуска
+# FROM nginx:alpine
+
+# # Копируем собранные файлы из builder в nginx
+# # COPY --from=builder /app/dist /usr/share/nginx/html
+# COPY --from=builder /app/dist /usr/share/nginx/html
+
+# COPY nginx/nginx.conf /etc/nginx/conf.d/default.conf
+
+# # Открываем порт 80
+# EXPOSE 80
+
+# # Запускаем nginx
+# CMD ["nginx", "-g", "daemon off;"]
