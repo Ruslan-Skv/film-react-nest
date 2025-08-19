@@ -38,10 +38,8 @@ async function bootstrap() {
   //   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   // });
   const corsOptions = {
-    // origin: process.env.NODE_ENV === 'production' 
-    //   ? ['http://film.nomoreparties.site', 'https://film.nomoreparties.site']
-    //   : 'http://localhost:5173',
-    origin: true,
+    origin: ['http://localhost:5173', 'http://rvs.students.nomorepartiessbs.ru'],
+    // origin: true,
     credentials: true,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept, Authorization',
