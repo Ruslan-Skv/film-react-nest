@@ -18,6 +18,9 @@ RUN npm run build
 # Этап запуска
 FROM node:alpine
 
+# Устанавливаем curl для healthcheck
+RUN apk add --no-cache curl
+
 WORKDIR /app
 
 # Копируем package.json и package-lock.json для production зависимостей
