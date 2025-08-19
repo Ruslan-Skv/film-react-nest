@@ -8,11 +8,16 @@ services:
     networks:
       - app_network  
     environment:
-      - POSTGRES_HOST=db
-      - POSTGRES_PORT=5432
-      - POSTGRES_USER=student
-      - POSTGRES_PASSWORD=student
-      - POSTGRES_DB=afisha
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=afisha
+      - DB_USER=student
+      - DB_PASSWORD=student
+      # - POSTGRES_HOST=db
+      # - POSTGRES_PORT=5432
+      # - POSTGRES_USER=student
+      # - POSTGRES_PASSWORD=student
+      # - POSTGRES_DB=afisha
       # - NODE_ENV=production
     env_file:
       - backend/.env
