@@ -1,6 +1,6 @@
 services:
   backend:
-    build: ghcr.io/ruslan-skv/backend:latest
+    image: ghcr.io/ruslan-skv/backend:latest
     container_name: backend
     depends_on:
       db:
@@ -26,9 +26,7 @@ services:
       retries: 3
     
   frontend:
-    build: 
-      context: ghcr.io/ruslan-skv/frontend:latest
-      dockerfile: Dockerfile
+    image: ghcr.io/ruslan-skv/frontend:latest
     container_name: frontend
     networks:
       - app_network
@@ -81,7 +79,7 @@ services:
     restart: unless-stopped
 
   nginx:
-    build: ghcr.io/ruslan-skv/nginx:latest
+    image: ghcr.io/ruslan-skv/nginx:latest
     depends_on:
       - frontend
       - backend

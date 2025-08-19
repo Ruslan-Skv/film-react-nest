@@ -1,6 +1,6 @@
 services:
   backend:
-    image: ghcr.io/ruslan-skv/backend:latest ./backend 
+    build: ghcr.io/ruslan-skv/backend:latest
     container_name: backend
     depends_on:
       db:
@@ -9,25 +9,37 @@ services:
       - app_network  
     environment:
       - POSTGRES_HOST=db
+      - POSTGRES_PORT=5432
+      - POSTGRES_USER=student
+      - POSTGRES_PASSWORD=student
+      - POSTGRES_DB=afisha
+      # - NODE_ENV=production
     env_file:
       - backend/.env
     restart: unless-stopped
+    # ports:
+    #   - "3000:3000"  # Для отладки
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000/api/healthcheck"]
-      interval: 1m30s
+      interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 40s
-
+    
   frontend:
-    image: ghcr.io/ruslan-skv/frontend:latest  ./frontend 
+    build: 
+      context: ghcr.io/ruslan-skv/frontend:latest
+      dockerfile: Dockerfile
     container_name: frontend
     networks:
       - app_network
-    volumes:
-      - frontend_dist:/app/dist
+    environment:
+      - REACT_APP_API_URL=/api  # Для прокси через nginx
     env_file:
       - frontend/.env
+    volumes:
+      - frontend_dist:/app/dist
+    depends_on:
+      - backend
     
   db:
     image: postgres:15
@@ -39,8 +51,8 @@ services:
       POSTGRES_PASSWORD: student
       POSTGRES_DB: afisha
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./db/init-db:/docker-entrypoint-initdb.d  # ← автоматическая инициализация
+      - postgres_data:/var/lib/postgresql/data  # монтирование тома для хранения данных СУБД PostgreSQL. Автоматически создаётся Docker'ом при первом запуске. Сохраняет данные между перезапусками контейнера
+      - ./db/init-db:/docker-entrypoint-initdb.d  # db/init-db - подкаталог, где хранятся SQL-скрипты. При первом запуске контейнера эти скрипты выполнятся автоматически.
     restart: unless-stopped
     ports:
       - "5432:5432" 
@@ -48,12 +60,14 @@ services:
       test: ["CMD-SHELL", "pg_isready -U student -d afisha"]
       interval: 5s
       timeout: 5s
-      retries: 5
+      retries: 10
+      start_period: 30s
 
   pgadmin:  
     image: dpage/pgadmin4
     container_name: pgadmin
     networks:
+      # - backend_network
       - app_network
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@example.com
@@ -67,14 +81,14 @@ services:
     restart: unless-stopped
 
   nginx:
-    image: ghcr.io/ruslan-skv/nginx:latest ./nginx 
+    build: ghcr.io/ruslan-skv/nginx:latest
     depends_on:
       - frontend
       - backend
     ports:
       - "80:80"
     volumes:
-      - frontend_dist:/usr/share/nginx/html:ro  
+      - frontend_dist:/usr/share/nginx/html:ro  # Монтируем собранный фронтенд
     networks:
       - app_network
     
@@ -86,3 +100,7 @@ volumes:
 networks:
   app_network:
     driver: bridge
+  # backend_network:  # Сеть для бэкенда, БД и pgAdmin и nginx
+  #   driver: bridge
+  # frontend_network:  # Сеть для фронтенда и nginx и бэкенда
+  #   driver: bridge
