@@ -1,5 +1,5 @@
 -- Создание таблицы film
-CREATE TABLE IF NOT EXISTS film (
+CREATE TABLE IF NOT EXISTS "films" (
     id UUID PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
     director VARCHAR(255) NOT NULL,
@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS film (
 );
 
 -- Создание таблицы schedule
-CREATE TABLE IF NOT EXISTS schedule (
+CREATE TABLE IF NOT EXISTS "schedules" (
     id UUID PRIMARY KEY,
     daytime TIMESTAMP WITH TIME ZONE NOT NULL,
     hall INTEGER NOT NULL,
@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS schedule (
     "filmId" UUID NOT NULL,
     CONSTRAINT fk_film
     FOREIGN KEY("filmId") 
-    REFERENCES film(id)
+    REFERENCES films(id)
     ON DELETE CASCADE
 );
 

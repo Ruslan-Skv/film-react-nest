@@ -2,7 +2,7 @@ import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Film } from './film.entity';
 import { IsString } from 'class-validator';
 
-@Entity()
+@Entity('schedules')
 export class Schedule {
   //   @Column({ primary: true })
   @PrimaryGeneratedColumn('uuid')

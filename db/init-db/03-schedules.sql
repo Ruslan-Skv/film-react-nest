@@ -1,5 +1,5 @@
 -- Вставка данных в таблицу schedule для фильма "Архитекторы общества"
-INSERT INTO schedule (id, daytime, hall, rows, seats, price, taken, "filmId")
+INSERT INTO "schedules" (id, daytime, hall, rows, seats, price, taken, "filmId")
 VALUES 
 ('f2e429b0-685d-41f8-a8cd-1d8cb63b99ce', '2024-06-28 10:00:53+03', 0, 5, 10, 350, '', '0e33c7f6-27a7-4aa0-8e61-65d7e5effecf'),
 ('5beec101-acbb-4158-adc6-d855716b44a8', '2024-06-28 14:00:53+03', 1, 5, 10, 350, '', '0e33c7f6-27a7-4aa0-8e61-65d7e5effecf'),
@@ -12,7 +12,7 @@ VALUES
 ('02a9feb2-fc92-4386-a917-aa79e7f8fd7f', '2024-06-30 18:00:53+03', 2, 5, 10, 350, '', '0e33c7f6-27a7-4aa0-8e61-65d7e5effecf');
 
 -- Вставка данных в таблицу schedule для фильма "Недостижимая утопия"
-INSERT INTO schedule (id, daytime, hall, rows, seats, price, taken, "filmId")
+INSERT INTO "schedules" (id, daytime, hall, rows, seats, price, taken, "filmId")
 VALUES 
 ('9647fcf2-d0fa-4e69-ad90-2b23cff15449', '2024-06-28 10:00:53+03', 0, 5, 10, 350, '', '51b4bc85-646d-47fc-b988-3e7051a9fe9e'),
 ('9f2db237-01d0-463e-a150-89f30bfc4250', '2024-06-28 14:00:53+03', 1, 5, 10, 350, '', '51b4bc85-646d-47fc-b988-3e7051a9fe9e'),
@@ -25,7 +25,7 @@ VALUES
 ('68437c84-6c35-4203-bff7-021d16042a6b', '2024-06-30 18:00:53+03', 2, 5, 10, 350, '', '51b4bc85-646d-47fc-b988-3e7051a9fe9e');
 
 -- Вставка данных в таблицу schedule для фильма "Звёздное путешествие"
-INSERT INTO schedule (id, daytime, hall, rows, seats, price, taken, "filmId")
+INSERT INTO "schedules" (id, daytime, hall, rows, seats, price, taken, "filmId")
 VALUES 
 ('351b437c-3430-4a35-b71d-b93b3d80274a', '2024-06-28 10:00:53+03', 0, 5, 10, 350, '', '3bedbc5a-844b-40eb-9d77-83b104e0cf75'),
 ('2661b7e2-7654-4d17-aa5d-9da76e4fb563', '2024-06-28 14:00:53+03', 1, 5, 10, 350, '', '3bedbc5a-844b-40eb-9d77-83b104e0cf75'),
@@ -38,7 +38,7 @@ VALUES
 ('24074084-1d42-49ff-b0fb-e64029674718', '2024-06-30 18:00:53+03', 2, 5, 10, 350, '', '3bedbc5a-844b-40eb-9d77-83b104e0cf75');
 
 -- Вставка данных в таблицу schedule для фильма "Стражи Гримуара"
-INSERT INTO schedule (id, daytime, hall, rows, seats, price, taken, "filmId")
+INSERT INTO "schedules" (id, daytime, hall, rows, seats, price, taken, "filmId")
 VALUES 
 ('793009d6-030c-4dd4-8d13-9ba500724b38', '2024-06-28 10:00:53+03', 0, 5, 10, 350, '["3:3","1:4","1:5","1:3","1:2"]', '5b70cb1a-61c9-47b1-b207-31f9e89087ff'),
 ('27a6c145-d5bf-4722-8bd9-b58c5b6b718f', '2024-06-28 14:00:53+03', 1, 5, 10, 350, '', '5b70cb1a-61c9-47b1-b207-31f9e89087ff'),
@@ -51,7 +51,7 @@ VALUES
 ('208ec902-8955-4a52-bdc3-a6ff04602ed9', '2024-06-30 18:00:53+03', 2, 5, 10, 350, '', '5b70cb1a-61c9-47b1-b207-31f9e89087ff');
 
 -- Вставка данных в таблицу schedule для фильма "Парадокс Нексуса"
-INSERT INTO schedule (id, daytime, hall, rows, seats, price, taken, "filmId")
+INSERT INTO "schedules" (id, daytime, hall, rows, seats, price, taken, "filmId")
 VALUES 
 ('d3f54ca3-8e19-4b63-afd4-6a8d03933339', '2024-06-28 10:00:53+03', 0, 5, 10, 350, '', '0354a762-8928-427f-81d7-1656f717f39c'),
 ('2d794723-eadc-43ea-b82b-268f0178fb43', '2024-06-28 14:00:53+03', 1, 5, 10, 350, '', '0354a762-8928-427f-81d7-1656f717f39c'),
@@ -64,7 +64,7 @@ VALUES
 ('53d4d8a0-d79f-4485-b4ce-ffc3a75540cb', '2024-06-30 18:00:53+03', 2, 5, 10, 350, '', '0354a762-8928-427f-81d7-1656f717f39c');
 
 -- Вставка данных в таблицу schedule для фильма "Сон в летний день"
-INSERT INTO schedule (id, daytime, hall, rows, seats, price, taken, "filmId")
+INSERT INTO "schedules" (id, daytime, hall, rows, seats, price, taken, "filmId")
 VALUES 
 ('5274c89d-f39c-40f9-bea8-f22a22a50c8a', '2024-06-28 10:00:53+03', 0, 5, 10, 350, '', '92b8a2a7-ab6b-4fa9-915b-d27945865e39'),
 ('3f7ed030-230c-4b06-bfc7-eeaee7f3f79b', '2024-06-28 14:00:53+03', 1, 5, 10, 350, '', '92b8a2a7-ab6b-4fa9-915b-d27945865e39'),

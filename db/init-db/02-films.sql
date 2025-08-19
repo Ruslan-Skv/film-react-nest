@@ -1,4 +1,4 @@
-INSERT INTO film (id, title, director, rating, tags, about, description, image, cover)
+INSERT INTO "films" (id, title, director, rating, tags, about, description, image, cover)
 VALUES 
 ('0e33c7f6-27a7-4aa0-8e61-65d7e5effecf', 'Архитекторы общества', 'Итан Райт', 2.9, 
  '["Документальный"]', 
