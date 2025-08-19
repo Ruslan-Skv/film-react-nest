@@ -13,7 +13,7 @@ services:
       - backend/.env
     restart: unless-stopped
     healthcheck:
-      test: "wget -nv -t1 --spider 'http://localhost:3000/'"
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/afisha/films"]
       interval: 1m30s
       timeout: 10s
       retries: 3
