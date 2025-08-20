@@ -1,13 +1,14 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Film } from './film.entity';
+import { IsString } from 'class-validator';
 
-@Entity()
+@Entity('schedules')
 export class Schedule {
   //   @Column({ primary: true })
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
+  @Column({ nullable: true })
   daytime: string; // Время сеанса (например, "14:00")
 
   @Column('int')
@@ -22,9 +23,12 @@ export class Schedule {
   @Column('int')
   price: number; // Цена билета
 
-  @Column('simple-array', { default: [] })
-  taken: string[]; // Массив занятых мест
-
+  // @Column({ type: 'text' })
+  // @IsString()
+  // taken: string;
+  @Column('simple-array')
+  taken: string[];
+  
   @ManyToOne(() => Film, (film) => film.schedules, { onDelete: 'CASCADE' })
   film: Film;
 }

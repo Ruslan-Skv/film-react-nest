@@ -5,56 +5,71 @@ import { ValidationPipe } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { Connection } from 'mongoose';
 import { getConnectionToken } from '@nestjs/mongoose';
+import { LoggerFactory } from './logging/logger.factory';
+import { Request, Response } from 'express';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    bufferLogs: true,
+  });
+  // Инициализируем логгер
+  const loggerType = process.env.LOGGER_TYPE as 'dev' | 'json' | 'tskv' || 'dev';
+  const logger = LoggerFactory.create(loggerType);
+
+   // Получаем экземпляр Express
+  const httpAdapter = app.getHttpAdapter();
+  const expressInstance = httpAdapter.getInstance();
+
+  // Healthcheck без префикса
+  expressInstance.get('/healthcheck', (req: Request, res: Response) => {
+    res.status(200).json({ status: 'ok' });
+  });
+
+  // Установка глобального префикса для API
   app.setGlobalPrefix('api/afisha');
-  app.enableCors({
-    origin: 'http://localhost:5173',
+
+  // app.enableCors({
+  //   origin: 'http://localhost:5173',
+  //   credentials: true,
+  //   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  // });
+  const corsOptions = {
+    origin: ['http://localhost:5173', 'http://rvs.students.nomorepartiessbs.ru'],
+    // origin: true,
     credentials: true,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-  });
+    allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept, Authorization',
+  };
+  app.enableCors(corsOptions);
+  app.useLogger(logger);
   app.useGlobalPipes(new ValidationPipe());
 
   try {
     // Проверка подключения к БД
+    logger.log('Starting application initialization...');
     if (process.env.DATABASE_DRIVER === 'postgres') {
+      logger.log('Checking PostgreSQL connection...');
       const dataSource = app.get(DataSource);
       await dataSource.query('SELECT 1');
-      console.log('PostgreSQL connected successfully');
+      logger.log('PostgreSQL connected successfully');
     } else if (process.env.DATABASE_DRIVER === 'mongodb') {
+      logger.log('Checking MongoDB connection...');
       const connection = app.get<Connection>(getConnectionToken());
       await connection.db.admin().ping();
-      console.log('MongoDB connected successfully');
+      logger.log('MongoDB connected successfully');
+    } else {
+      logger.warn('No database driver specified in environment variables');
     }
 
     await app.listen(3000);
-    console.log(`Server running on http://localhost:3000/api/afisha`);
+    logger.log(`Application is running on: http://localhost:3000/api/afisha`);
+    logger.debug(`Logger type: ${loggerType}`);
+    logger.debug(`NODE_ENV: ${process.env.NODE_ENV || 'development'}`);
   } catch (error) {
-    console.error('Application startup error:', error);
+    logger.error('Application startup failed', error instanceof Error ? error.stack : error);
     process.exit(1);
   }
 }
 bootstrap();
 
 
-
-
-// async function bootstrap() {
-//   const app = await NestFactory.create(AppModule);
-//   app.setGlobalPrefix('api/afisha');
-//   app.enableCors({
-//     origin: 'http://localhost:5173',
-//     credentials: true,
-//     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-//   });
-//   app.useGlobalPipes(new ValidationPipe());
-//   // await app.listen(3000);
-//   try {
-//     await app.listen(3000);
-//     console.log('Connected to PostgreSQL database');
-//   } catch (error) {
-//     console.error('Database connection error:', error);
-//   }
-// }
-// bootstrap();

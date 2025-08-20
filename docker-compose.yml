@@ -1,0 +1,87 @@
+services:
+  backend:
+    # build: ./backend
+    image: ghcr.io/ruslan-skv/backend:latest
+    container_name: backend
+    depends_on:
+      - postgres
+    networks:
+      - app_network  
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=afisha
+      - DB_USER=student
+      - DB_PASSWORD=student
+      - POSTGRES_HOST=postgres
+    env_file:
+      - backend/.env
+    restart: unless-stopped
+    ports:
+      - "3000:3000"  # Для отладки
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/healthcheck"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    
+  frontend:
+    # build: ./frontend
+    image: ghcr.io/ruslan-skv/frontend:latest
+    container_name: frontend
+    networks:
+      - app_network
+    env_file:
+      - frontend/.env
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    
+  postgres:
+    image: postgres:15
+    container_name: postgres
+    networks:
+      - app_network
+    environment:
+      POSTGRES_USER: student
+      POSTGRES_PASSWORD: student
+      POSTGRES_DB: afisha
+    volumes:
+      - postgres_data:/var/lib/postgresql/data  # монтирование тома для хранения данных СУБД PostgreSQL. Автоматически создаётся Docker'ом при первом запуске. Сохраняет данные между перезапусками контейнера
+      - ./db/init-db:/docker-entrypoint-initdb.d  # db/init-db - подкаталог, где хранятся SQL-скрипты. При первом запуске контейнера эти скрипты выполнятся автоматически.
+    restart: unless-stopped
+    # ports:
+    #   - "5432:5432" 
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U student -d afisha"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  pgadmin:  
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    networks:
+      - app_network
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    volumes:
+      # - pgadmin-data:/var/lib/pgadmin/data
+      - pgadmin-data:/var/lib/pgadmin
+    ports:
+      - 8080:80
+    depends_on:
+      - postgres
+    restart: unless-stopped
+    
+volumes:
+  postgres_data:
+  pgadmin-data:
+
+networks:
+  app_network:
+    driver: bridge
+  
