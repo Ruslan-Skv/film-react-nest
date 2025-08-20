@@ -32,9 +32,12 @@ RUN npm ci --only=production
 # Копируем собранные файлы из builder
 COPY --from=builder /app/dist ./dist
 
+# Копируем папку public
+COPY --from=builder /app/public ./public
+
 # Открываем порт
 EXPOSE 3000
 
 # Запускаем приложение
-# CMD ["node", "dist/main"]
-CMD ["node", "dist/main", "--host", "0.0.0.0"]
+CMD ["node", "dist/main"]
+# CMD ["node", "dist/main", "--host", "0.0.0.0"]

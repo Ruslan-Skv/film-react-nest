@@ -28,10 +28,6 @@ async function bootstrap() {
   // Установка глобального префикса для API
   app.setGlobalPrefix('api/afisha');
 
-
-  // app.get('/healthcheck', (req, res) => {
-  //   res.json({ status: 'ok' });
-  // });
   // app.enableCors({
   //   origin: 'http://localhost:5173',
   //   credentials: true,
