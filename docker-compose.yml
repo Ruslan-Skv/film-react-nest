@@ -1,7 +1,7 @@
 services:
   backend:
-    build: ./backend
-    # image: ghcr.io/ruslan-skv/backend:latest
+    # build: ./backend
+    image: ghcr.io/ruslan-skv/backend:latest
     container_name: backend
     depends_on:
       - postgres
@@ -26,8 +26,8 @@ services:
       retries: 3
     
   frontend:
-    build: ./frontend
-    # image: ghcr.io/ruslan-skv/frontend:latest
+    # build: ./frontend
+    image: ghcr.io/ruslan-skv/frontend:latest
     container_name: frontend
     networks:
       - app_network
