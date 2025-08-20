@@ -1,4 +1,6 @@
 # FILM!
+Ссылка на проект: http://rvs.students.nomorepartiessbs.ru/
+Ссылка на репоиторий: https://github.com/Ruslan-Skv/film-react-nest
 
 ## Установка
 
